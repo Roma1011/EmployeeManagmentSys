@@ -1,0 +1,42 @@
+@model List<EmployeeManagementSystem.Application.DTOs.PositionDto>
+@{
+    ViewData["Title"] = "Position Tree";
+}
+
+<h2>Position Tree</h2>
+<hr />
+
+<div class="row mb-3">
+    <div class="col-md-12 text-end">
+        <a asp-action="Create" class="btn btn-success">Add New Position</a>
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="tree">
+        @foreach (var position in Model)
+        {
+            @await Html.PartialAsync("_PositionNode", position)
+        }
+    </div>
+}
+else
+{
+    <p class="text-center">No positions found.</p>
+}
+
+@section Scripts {
+    <script>
+        function deletePosition(id) {
+            if (confirm('Are you sure you want to delete this position?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("Delete", "Positions")/' + id;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+}
+

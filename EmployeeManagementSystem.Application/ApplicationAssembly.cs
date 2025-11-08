@@ -1,0 +1,3 @@
+﻿namespace EmployeeManagementSystem.Application;
+
+public class ApplicationAssembly;

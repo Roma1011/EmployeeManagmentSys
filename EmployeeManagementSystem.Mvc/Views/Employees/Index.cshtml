@@ -1,0 +1,92 @@
+@model List<EmployeeManagementSystem.Application.DTOs.EmployeeDto>
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<h2>Employee List</h2>
+<hr />
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search by name..." value="@ViewBag.SearchTerm" />
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Clear</a>
+        </form>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-success">Add New Employee</a>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Personal Number</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Date of Birth</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.PersonalNumber</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Gender</td>
+                    <td>@employee.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                    <td>@(employee.Email ?? "-")</td>
+                    <td>@employee.PositionId</td>
+                    <td>@employee.Status</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@employee.Id">
+                            Delete
+                        </button>
+                        <div class="modal fade" id="deleteModal-@employee.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@employee.Id" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <form asp-action="Delete" asp-route-id="@employee.Id" method="post">
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel-@employee.Id">Confirm Delete</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            Are you sure you want to delete <strong>@employee.FirstName @employee.LastName</strong>?
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                            <button type="submit" class="btn btn-danger">Yes</button> 
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9" class="text-center">No employees found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
